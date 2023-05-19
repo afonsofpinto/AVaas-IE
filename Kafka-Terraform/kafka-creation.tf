@@ -16,7 +16,7 @@ terraform {
 variable "nBroker" {
   description = "number of brokers"
   type = number
-  default = 2
+  default = 3
 }
 
 variable "zookeeper_kafka_port" {
@@ -78,12 +78,13 @@ locals {
 # Config script template
 data "template_file" "config_script" {
     depends_on = [aws_instance.exampleCluster]
-    template = "${file("${path.module}/config.sh")}"
+    template = file("${path.module}/config.sh")
 
     vars = {
-        totalBrokers = "${var.nBroker}"
+        totalBrokers = var.nBroker
         kafka_config = local.kafka_config
         zookeeper_config = local.zookeeper_config
+        broker1 = local.instance_hostnames[0]
     }
 }
 
@@ -93,16 +94,16 @@ resource "null_resource" "updateConfigs" {
   count = "${var.nBroker}"
 
   connection {
-    host        = "${local.instance_hostnames[count.index]}"
+    host        = local.instance_hostnames[count.index]
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file("${path.module}/${var.aws_keyname}")
+    private_key = file("../${var.aws_keyname}")
   }
 
   provisioner "remote-exec" {
     inline = [
       "cd ; echo ${count.index + 1} > id.txt",
-      "${data.template_file.config_script.rendered}",
+      data.template_file.config_script.rendered,
     ]
   }
 }

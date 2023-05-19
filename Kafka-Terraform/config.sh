@@ -48,9 +48,14 @@ sudo sed -i "s/zookeeper.connect=localhost:2181/zookeeper.connect=${kafka_config
 # start zookeeper on boot
 sudo bash -c 'echo "sudo /usr/local/zookeeper/bin/zkServer.sh start" >> /etc/rc.local'
 # start kafka on boot
+sudo bash -c 'echo "wait 15" >> /etc/rc.local'
 sudo bash -c 'echo "(sudo /usr/local/kafka/bin/kafka-server-start.sh -daemon /usr/local/kafka/config/server.properties) &" >> /etc/rc.local'
-# set necessary kafka topics on boot
-sudo bash -c "wait 10"
+# set necessary kafka topics on boot (only one process does this)
+if [ $idBroker -eq 1 ]; then
+  sudo bash -c 'echo "sudo /usr/local/kafka/bin/kafka-topics.sh --create --bootstrap-server ${broker1}:9092 -replication-factor ${totalBrokers} --partitions ${totalBrokers*2} --topic vehicle-txns" >> /etc/rc.local'
+  sudo bash -c 'echo "sudo /usr/local/kafka/bin/kafka-topics.sh --create --bootstrap-server ${broker1}:9092 -replication-factor ${totalBrokers} --partitions ${totalBrokers*2} --topic apilot-txns" >> /etc/rc.local'
+  sudo bash -c 'echo "sudo /usr/local/kafka/bin/kafka-topics.sh --create --bootstrap-server ${broker1}:9092 -replication-factor ${totalBrokers} --partitions ${totalBrokers*2} --topic av-events" >> /etc/rc.local'
+fi
 sudo chmod +x /etc/rc.local   # make it executable
 sudo systemctl enable rc-local.service
 sudo systemctl start  rc-local.service

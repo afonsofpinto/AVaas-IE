@@ -49,6 +49,8 @@ variable "db_name" {
 Then run the following commands:
 ```bash
 cd RDS-Terraform
+terraform init
+terraform destroy -var-file="../aws-session.tf"
 terraform apply -var-file="../aws-session.tf"
 ```
 
@@ -57,12 +59,17 @@ terraform apply -var-file="../aws-session.tf"
 From the root directory execute the following commands:
 ```bash
 cd Kafka-Terraform
+terraform init
+terraform destroy -var-file="../aws-session.tf"
 terraform apply -var-file="../aws-session.tf"
 ```
 
 Go to your AWS dashboard and **reboot all created instances**.
-Once they are rebooted, wait around 15s, and kafka should be working on the specified port at all brokers.
+Once they are rebooted, wait around 15s, and kafka should be working on the 
+specified port at all brokers.
 
+The broker's hostnames are printed on the terminal, so you can use those values to set 
+the properties on the next section
 
 ## 3 - Launch Microservices
 Set the following properties in the application.properties file in each microservice:
