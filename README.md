@@ -72,12 +72,49 @@ The broker's hostnames are printed on the terminal, so you can use those values 
 the properties on the next section
 
 ## 3 - Launch Microservices
-Set the following properties in the application.properties file in each microservice:
-```yaml
-quarkus.datasource.username=<your-username>
-quarkus.datasource.password=<your-password>
-quarkus.datasource.reactive.url=mysql://<your-hostname>:<your-port>/<your-database>
+There is a total of 3 microservices: 
+- APILOT (```cd /APILOT```)  
+- User (```cd /user ... ```)
+- Car Manufacturer (```cd /car ...```)
+
+Edit the ```Quarkus-Project/microservices.sh``` file:
+```bash
+dockerUsername="ietest"
+dockerPassword="123456789"
+dbUsername="root"
+dbPassword="password"
+dbHostAPILOT="localhost:3036"
+dbHostCar=""
+dbHostUser=""
 ```
 
+Run the deployment script:
+```
+bash microservice_builder.sh
+```
+
+## 4 - Launch AVaaSSimulator
+Copy the kafka_brokers variable from the output of 2. and put them in the pom.xml:
+```Xml
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <mainClass>AVaaSMessageProvider</mainClass> <!-- Replace with your main class -->
+          <arguments>
+            <argument>--broker-list</argument>
+            <argument>!!PASTE kafka_brokers HERE!!</argument>
+            <argument>--filterprefix</argument>
+            <argument>av-events</argument>
+            <!-- Add more arguments as needed -->
+          </arguments>
+        </configuration>
+      </plugin>
+```
+Then run the application with:
+```
+mvn exec:java
+```
 
 			

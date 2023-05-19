@@ -2,5 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/AVaaSSimulator" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Event-generator/AVaaSSimulator" vcs="Git" />
   </component>
 </project>

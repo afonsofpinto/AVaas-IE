@@ -37,6 +37,12 @@ variable "zookeeper_leader_port" {
   default = 3888
 }
 
+variable "kafka_port" {
+  description = "Port of kafka"
+  type = number
+  default = 9092
+}
+
 variable "security_group_name" {
   description = "The name of the security group"
   type = string
@@ -72,6 +78,7 @@ resource "aws_instance" "exampleCluster" {
 locals {
   instance_hostnames = [for i in range(var.nBroker) : element(aws_instance.exampleCluster, i).public_dns]
   kafka_config = join(",", [for i in range(var.nBroker) : "${local.instance_hostnames[i]}:${var.zookeeper_kafka_port}"])
+  kafka_brokers = join(",", [for i in range(var.nBroker) : "${local.instance_hostnames[i]}:${var.kafka_port}"])
   zookeeper_config = join(",", [for i in range(var.nBroker) : "server.${i+1}=${local.instance_hostnames[i]}:${var.zookeeper_zookeeper_port}:${var.zookeeper_leader_port}"])
 }
 
@@ -111,6 +118,10 @@ resource "null_resource" "updateConfigs" {
 
 output "instance_hostnames" {
   value = local.instance_hostnames
+}
+
+output "kafka_brokers" {
+  value = local.kafka_brokers
 }
 
 resource "aws_security_group" "instance" {
