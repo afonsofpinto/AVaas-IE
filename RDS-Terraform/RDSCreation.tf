@@ -8,11 +8,15 @@ terraform {
   }
 }
 
+variable "aws_access_key" {}
+variable "aws_secret_key" {}
+variable "aws_token" {}
+
 provider "aws" {
   region = "us-east-1"
-  access_key  = "ASIAXB3NBADQVTLEQN6O"
-  secret_key  = "bFvFEJdFRMFor1go0SROpqGK365tl+DoNUaZEf9b"
-  token = "FwoGZXIvYXdzEEQaDL8RA97FSbkYSVZ8vyLHAX+xWflCDbu/vpDYwsvRFWO+aLCvgdWuxZT3ekcH+Q+RzNrgXG1EbSKm2Abj8TSKbdEl7XHeAdmRgrG8oXqTFD3Ya26suCbMVhXB68hheSbdds0Ah+8lTWTo0RAwAiPCwTDsnbhscf811ejC58Xhdk22zBqz0sSQCG0J/p6zT3atRAe1BUG0AVGrKVfgsio/Ao4pO0pbtMJMRVlillrMmBTvlcfa7sfulaSGLK7NoTAMvI7Buc5+K37wh4OOhXTFFOllDVFRCgIoo/aXowYyLRcOQ2tRDgLNqiYvf4Nr2TsFY3n4WvsqKaN7fVL9O6o4wneEBIaGPz8pw4Fhuw=="
+  access_key  = var.aws_access_key
+  secret_key  = var.aws_secret_key
+  token = var.aws_token
 }
 
 variable "db_username" {
