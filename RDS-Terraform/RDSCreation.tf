@@ -23,43 +23,71 @@ variable "db_username" {
   description = "The username for the database"
   type        = string
   sensitive   = true
-  default     = "afonsid"
+  default     = "root"
 }
 
 variable "db_password" {
   description = "The password for the database"
   type        = string
   sensitive   = true
-  default     = "12345678"
+  default     = "password"
 }
 
-variable "db_name" {
+variable "apilot_db_name" {
   description = "The name to use for the database"
   type        = string
-  default     = "avaas"
+  default     = "apilot"
 }
 
-resource "aws_db_instance" "example" {
-  identifier_prefix   = "avaas"
+variable "car_db_name" {
+  description = "The name to use for the database"
+  type        = string
+  default     = "car"
+}
+
+variable "user_db_name" {
+  description = "The name to use for the database"
+  type        = string
+  default     = "user"
+}
+
+resource "aws_db_instance" "apilot" {
+  identifier_prefix   = "apilot"
   engine              = "mysql"
-  allocated_storage   = 20
+  allocated_storage   = 10
   instance_class      = "db.t2.micro"
   skip_final_snapshot = true
   publicly_accessible = true
   vpc_security_group_ids  = [aws_security_group.rds.id]
-  db_name             = var.db_name
+  db_name             = var.apilot_db_name
   username = var.db_username
   password = var.db_password
 }
 
-output "address" {
-  value       = aws_db_instance.example.address
-  description = "Connect to the database at this endpoint"
+resource "aws_db_instance" "car" {
+  identifier_prefix   = "car"
+  engine              = "mysql"
+  allocated_storage   = 10
+  instance_class      = "db.t2.micro"
+  skip_final_snapshot = true
+  publicly_accessible = true
+  vpc_security_group_ids  = [aws_security_group.rds.id]
+  db_name             = var.car_db_name
+  username = var.db_username
+  password = var.db_password
 }
 
-output "port" {
-  value       = aws_db_instance.example.port
-  description = "The port the database is listening on"
+resource "aws_db_instance" "user" {
+  identifier_prefix   = "user"
+  engine              = "mysql"
+  allocated_storage   = 10
+  instance_class      = "db.t2.micro"
+  skip_final_snapshot = true
+  publicly_accessible = true
+  vpc_security_group_ids  = [aws_security_group.rds.id]
+  db_name             = var.user_db_name
+  username = var.db_username
+  password = var.db_password
 }
 
 resource "aws_security_group" "rds" {
@@ -83,4 +111,34 @@ variable "security_group_name" {
   description = "The name of the security group"
   type        = string
   default     = "terraform-rds-instance"
+}
+
+
+# DONT CHANGE -- Used in the scripts
+
+output "dbUsername" {
+  value       = nonsensitive(var.db_username)
+  sensitive = false
+}
+output "dbPassword" {
+  value       = nonsensitive(var.db_password)
+  sensitive = false
+}
+output "dbHostAPILOT" {
+  value       = aws_db_instance.apilot.address
+}
+output "dbHostCar" {
+  value       = aws_db_instance.car.address
+}
+output "dbHostUser" {
+  value       = aws_db_instance.user.address
+}
+output "dbAPILOTName" {
+  value       = var.apilot_db_name
+}
+output "dbCarName" {
+  value       = var.car_db_name
+}
+output "dbUserName" {
+  value       = var.user_db_name
 }

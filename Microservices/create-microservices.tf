@@ -29,8 +29,8 @@ provider "aws" {
 
 
 resource "aws_instance" "apilot" {
-  ami = "ami-09e51988f56677f44" # Amazon Linux ARM
-  instance_type = "c6g.medium"
+  ami = "ami-06a0cd9728546d178" # Amazon Linux x86 CHANGE THIS
+  instance_type = "t2.medium"
   vpc_security_group_ids = [aws_security_group.microservice.id]
   key_name = "vockey"
   user_data = "${file("./scripts/apilot.sh")}"
@@ -38,6 +38,32 @@ resource "aws_instance" "apilot" {
 
   tags = {
   Name = "APILOT-microservice"
+  }
+}
+
+resource "aws_instance" "car" {
+  ami = "ami-06a0cd9728546d178" # Amazon Linux x86 CHANGE THIS
+  instance_type = "t2.medium"
+  vpc_security_group_ids = [aws_security_group.microservice.id]
+  key_name = "vockey"
+  user_data = "${file("./scripts/car.sh")}"
+  user_data_replace_on_change = true
+
+  tags = {
+    Name = "Car-microservice"
+  }
+}
+
+resource "aws_instance" "user" {
+  ami = "ami-06a0cd9728546d178" # Amazon Linux x86 CHANGE THIS
+  instance_type = "t2.medium"
+  vpc_security_group_ids = [aws_security_group.microservice.id]
+  key_name = "vockey"
+  user_data = "${file("./scripts/user.sh")}"
+  user_data_replace_on_change = true
+
+  tags = {
+    Name = "User-microservice"
   }
 }
 
@@ -66,8 +92,20 @@ variable "security_group_name" {
   type = string
   default = "terraform-Quarkus-instance"
 }
-output "address" {
+
+
+output "apilot_microservice" {
   value = aws_instance.apilot.public_dns
+  description = "Address of the Quarkus EC2 machine"
+}
+
+output "car_microservice" {
+  value = aws_instance.car.public_dns
+  description = "Address of the Quarkus EC2 machine"
+}
+
+output "user_microservice" {
+  value = aws_instance.user.public_dns
   description = "Address of the Quarkus EC2 machine"
 }
 
