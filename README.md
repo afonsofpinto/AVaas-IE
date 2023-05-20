@@ -71,7 +71,7 @@ the properties on the next section
 
 ## 4 - Launch Microservices
 
-Edit the ```Quarkus-Project/deploy_microservices.sh``` file. Namely, copy the 
+Edit the ```Microservices/deploy_microservices.sh``` file. Namely, copy the 
 output of 2. (the databases info) and paste them here, and edit other fields:  
 **WARNING** - the output comes with spaces between the variable, the equals sign and the value. Make sure
 to delete the spaces to be exactly as it is below!
@@ -91,7 +91,7 @@ dbUserName="user"
 dbUsername="root"
 
 # kafka
-kafkaBrokers=""
+kafkaBrokers="ec2-18-233-8-92.compute-1.amazonaws.com:9092,ec2-18-206-245-148.compute-1.amazonaws.com:9092,ec2-54-173-82-93.compute-1.amazonaws.com:9092"
 ```
 For the kafka brokers you can copy the output from **3.**
 

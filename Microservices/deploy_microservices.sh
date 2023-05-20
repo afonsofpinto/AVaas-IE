@@ -4,13 +4,15 @@ dockerUsername="ietest"
 dockerPassword="123456789"
 
 # paste here the output from RDS database terraform
+dbAPILOTName="apilot"
 dbCarName="car"
-dbHostAPILOT="apilot20230520142313465000000003.chphl7tm5mbk.us-east-1.rds.amazonaws.com"
-dbHostCar="car20230520142313464500000002.chphl7tm5mbk.us-east-1.rds.amazonaws.com"
-dbHostUser="user20230520142313461600000001.chphl7tm5mbk.us-east-1.rds.amazonaws.com"
+dbHostAPILOT="apilot20230520181626314100000003.chphl7tm5mbk.us-east-1.rds.amazonaws.com"
+dbHostCar="car20230520181626309900000001.chphl7tm5mbk.us-east-1.rds.amazonaws.com"
+dbHostUser="user20230520181626313000000002.chphl7tm5mbk.us-east-1.rds.amazonaws.com"
 dbPassword="password"
 dbUserName="user"
 dbUsername="root"
+
 
 # kafka brokers
 kafkaBrokers="ec2-34-238-41-239.compute-1.amazonaws.com:9092,ec2-3-92-0-2.compute-1.amazonaws.com:9092,ec2-54-161-213-61.compute-1.amazonaws.com:9092"
