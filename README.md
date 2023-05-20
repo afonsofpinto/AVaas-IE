@@ -48,7 +48,7 @@ terraform init
 terraform destroy -var-file="../aws-session.tf"
 terraform apply -var-file="../aws-session.tf"
 ```
-Save the output somewhere (it will be used in point **3.**)
+Save the output somewhere (it will be used in point **4.**)
 
 
 ## 3 - Launch Kafka cluster
@@ -93,7 +93,7 @@ dbUsername="root"
 # kafka
 kafkaBrokers=""
 ```
-For the kafka brokers you can copy the output from **2.**
+For the kafka brokers you can copy the output from **3.**
 
 **IMPORTANT** - depending on your system's architecture, you may need to change the instance type
 as well as the AMI in ```Microservices/create-microservices.tf```:
@@ -126,17 +126,17 @@ and kafka.
 
 
 ## 5 - Launch AVaaSSimulator
-Copy the kafka_brokers variable from the output of 3. and put them in the pom.xml:
+Copy the kafka_brokers variable from the output of **3.** and put them in the pom.xml:
 ```Xml
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.0.0</version>
         <configuration>
-          <mainClass>AVaaSMessageProvider</mainClass> <!-- Replace with your main class -->
+          <mainClass>AVaaSMessageProvider</mainClass> 
           <arguments>
             <argument>--broker-list</argument>
-            <argument>!!PASTE kafka_brokers HERE!!</argument>
+            <argument>!!PASTE kafka_brokers HERE!!</argument> <!-- Replace kafka brokers here -->
             <argument>--filterprefix</argument>
             <argument>av-events</argument>
             <!-- Add more arguments as needed -->
@@ -159,8 +159,8 @@ And issue the following command:
 ```bash
 /usr/local/kafka/bin/kafka-console-consumer.sh --bootstrap-server <microservice-hostname>:9092 --topic <topic> --from-beginning
 ```
-where <topic> can be one of the following:
-- av-events (where AVaaSSimulator produces to)
-- vehicle-txns (where User microservice produces to)
-- apilot-txns (where User microservice produces to)
+Where **topic** can be one of the following:
+- **av-events** (where AVaaSSimulator produces to)
+- **vehicle-txns** (where User microservice produces to)
+- **apilot-txns** (where User microservice produces to)
 			
