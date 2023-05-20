@@ -1,0 +1,4 @@
+aws_access_key = "ASIAUWKR3LB2X57XDDM7"
+aws_secret_key = "9gIwUiAEXybuLjTum/Iy5UqJbLyq/I6woT9p5Rku"
+aws_token = "FwoGZXIvYXdzEHIaDCs5F7pSVA+UlFf2GyLTARB0im+wPuaWXQIj51vAfAEKfurhDshF4Fn+n+taDSRAVrUpmPPapBciAtH5U+QL3nmBnohcwJAqxcO0KjGcGgSz+dfUKIDGOGC7kqtIA2JYGLHc5OxlyjHG8h5Z++FVaeFZVs94iQPB4n+OXakIC+YBKXjQAa5VKC//mnwNvX5bmTjIhOwGRA1UPCApc5YB0x6xI+pWWhw0ompnZ753OjdR5gh7QO7hElKdVLNKeOrLJj5fOt5UmL4zxdQvLi0rcspYImH9GdxjfO6O+BZBCYFwfIQoq5miowYyLRhsJa2F38PHwlQw06CphvcBgqqVIKpgOn+mWGYX5i4UCuyeEnhd1fNUD8+qAw=="
+aws_keyname = "labsuser.pem"
