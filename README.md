@@ -52,7 +52,7 @@ Save the output somewhere (it will be used in point **4.**)
 
 
 ## 3 - Launch Kafka cluster
-
+#### !IMPORTANT! - Use LF as the line terminator on all scripts. Else some scripts will not execute in the AWS instances!
 From the root directory execute the following commands:
 ```bash
 cd Kafka-Terraform
