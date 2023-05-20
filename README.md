@@ -95,6 +95,11 @@ kafkaBrokers="ec2-18-233-8-92.compute-1.amazonaws.com:9092,ec2-18-206-245-148.co
 ```
 For the kafka brokers you can copy the output from **3.**
 
+Also paste the kafka servers in the application.properties of User microservice:
+```properties
+kafka.bootstrap.servers=ec2-54-197-77-131.compute-1.amazonaws.com:9092,ec2-44-208-162-39.compute-1.amazonaws.com:9092,ec2-35-173-244-102.compute-1.amazonaws.com:9092
+```
+
 **IMPORTANT** - depending on your system's architecture, you may need to change the instance type
 as well as the AMI in ```Microservices/create-microservices.tf```:
 ```Terraform
