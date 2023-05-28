@@ -117,12 +117,28 @@ Run the deployment script:
 bash deploy_microservices.sh
 ```
 Wait about 20s for the instances to install all the dependencies, and run the microservice.
-Now you should be able to access each microservice in the following 
-path: ```http://<microservice_hostname>:8080/q/swagger-ui```.  
+Now you should be able to access each microservice via https in the following
+path: ```https://<microservice_hostname>:8443/q/swagger-ui```.  
 You should replace ```<microservice_hostname>``` with the hostnames from the output of the
 terraform file after running the script.
 The microservices now should be connected to the respective databases
 and kafka.
+
+
+
+**As we implemented Transport Layer Security (TLS) between the browser and the quarkus server, the final step is to accept the self-signed Certify:**
+
+
+
+![](Images/passSecurity.png)
+
+
+
+
+
+
+
+
 
 
 ## 5 - Launch AVaaSSimulator

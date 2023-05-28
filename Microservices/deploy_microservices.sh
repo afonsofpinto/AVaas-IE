@@ -34,6 +34,11 @@ docker login -u "$dockerUsername" -p "$dockerPassword"
 
 bash ./scripts/buildContainers.sh
 
+
+# Generate Key Pair and a Self-Signed Contract 
+bash ./scripts/security_setup.sh
+
+
 # build scripts for each microservice to execute when deployed
 bash ./scripts/microservice_builder.sh "$dockerUsername" "$dockerPassword" "apilot" "./scripts/apilot.sh"
 bash ./scripts/microservice_builder.sh "$dockerUsername" "$dockerPassword" "car" "./scripts/car.sh"
