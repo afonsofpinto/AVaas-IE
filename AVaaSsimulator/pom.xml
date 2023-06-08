@@ -1,0 +1,56 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>IE.AVaaS.Simulator2023</groupId>
+  <artifactId>AVaaSSimulator2023</artifactId>
+  <version>0.0.1</version>
+  
+  
+    <properties> 
+  <maven.compiler.source>1.8</maven.compiler.source> 
+  <maven.compiler.target>1.8</maven.compiler.target>
+</properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <mainClass>AVaaSMessageProvider</mainClass> <!-- Replace with your main class -->
+          <arguments>
+            <argument>--broker-list</argument>
+            <argument>ec2-34-238-41-239.compute-1.amazonaws.com:9092,ec2-3-92-0-2.compute-1.amazonaws.com:9092,ec2-54-161-213-61.compute-1.amazonaws.com:9092</argument>
+            <argument>--filterprefix</argument>
+            <argument>av-events</argument>
+            <!-- Add more arguments as needed -->
+          </arguments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+      <version>2.8.0</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-shade-plugin</artifactId>
+      <version>3.2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.23</version>
+    </dependency>
+  
+</dependencies>
+  
+</project>

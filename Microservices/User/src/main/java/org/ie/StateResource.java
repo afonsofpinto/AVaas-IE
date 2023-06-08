@@ -15,6 +15,8 @@ import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.ie.Dtos.CarEvent;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 
 
@@ -25,6 +27,10 @@ public class StateResource {
     @Inject
     @ConfigProperty(name = "myapp.schema.create", defaultValue = "true") 
     boolean schemaCreate;
+    @Channel("vehicle-txns")
+    Emitter<String> vehicleEmitter; // TODO change to carevent
+    @Channel("apilot-txns")
+    Emitter<String> apilotEmitter;  // TODO change to apilot event
     @PostConstruct
     void config() {
         if (schemaCreate) {
@@ -70,7 +76,8 @@ public class StateResource {
     @Path("/buyCar/{balance}/{car_price}")
     public Uni<Response> buyCar(State state,@PathParam Integer balance,@PathParam Integer car_price) throws InterruptedException {
         Integer new_balance = balance-car_price;
-        if(new_balance>0  &&  (new CarEvent("BUY CAR", state.getClient_id(),state.getCar_name(), state.getManufactor(), car_price)).produceEvent() != null ){
+        if(new_balance>0 ){
+            vehicleEmitter.send((new CarEvent("BUY CAR", state.getClient_id(),state.getCar_name(), state.getManufactor(), car_price)).toString());
             state.buyCar(client)
             .onItem().transform(id -> URI.create("/cars/" + id))
             .onItem().transform(uri -> Response.created(uri).build()).await().indefinitely();            
@@ -85,7 +92,7 @@ public class StateResource {
     @DELETE
     @Path("/sellCar/{id}/{car_name}/{manufactor}/{car_price}")
     public Uni<Response> sellCar(@PathParam Long id,@PathParam String car_name,@PathParam String manufactor,@PathParam Integer car_price) throws InterruptedException {
-           (new CarEvent("SELL CAR", id, car_name, manufactor,car_price)).produceEvent();    
+            vehicleEmitter.send((new CarEvent("SELL CAR", id, car_name, manufactor,car_price)).toString());
             Client.incrementBalance(client,id,car_price).onItem().transform(updated -> updated ? Status.NO_CONTENT : Status.NOT_FOUND)
             .onItem().transform(status -> Response.status(status).build()).await().indefinitely();
             System.out.println("Ola1");
@@ -120,6 +127,7 @@ public class StateResource {
     @PUT
     @Path("/selectPilot")
         public Uni<Response> selectapilot(State state) {
+        apilotEmitter.send("SELECTED " + state.getApilot_id() + " from " + state.getManufactor());
         return State.selectApilot(client, state.getClient_id(),state.getApilot_id(),state.getCar_name(),state.getManufactor())
         .onItem().transform(updated -> updated ? Status.NO_CONTENT : Status.NOT_FOUND)
         .onItem().transform(status -> Response.status(status).build());
@@ -128,6 +136,7 @@ public class StateResource {
     @PUT
     @Path("/unselectPilot")
     public Uni<Response> unselectapilot(State state) {
+        apilotEmitter.send("UNSELECTED " + state.getApilot_id() + " from " + state.getManufactor());
         return State.unselectApilot(client, state.getClient_id(),state.getCar_name(),state.getManufactor())
         .onItem().transform(updated -> updated ? Status.NO_CONTENT : Status.NOT_FOUND)
         .onItem().transform(status -> Response.status(status).build());
