@@ -6,9 +6,9 @@ dockerPassword="123456789"
 # paste here the output from RDS database terraform
 dbAPILOTName="apilot"
 dbCarName="car"
-dbHostAPILOT="apilot20230520213952123400000003.chphl7tm5mbk.us-east-1.rds.amazonaws.com"
-dbHostCar="car20230520213952123400000002.chphl7tm5mbk.us-east-1.rds.amazonaws.com"
-dbHostUser="user20230520213952123300000001.chphl7tm5mbk.us-east-1.rds.amazonaws.com"
+dbHostAPILOT="apilot20230608151020679600000003.chphl7tm5mbk.us-east-1.rds.amazonaws.com"
+dbHostCar="car20230608151020672500000001.chphl7tm5mbk.us-east-1.rds.amazonaws.com"
+dbHostUser="user20230608151020673000000002.chphl7tm5mbk.us-east-1.rds.amazonaws.com"
 dbPassword="password"
 dbUserName="user"
 dbUsername="root"
@@ -16,7 +16,7 @@ dbUsername="root"
 
 
 # kafka brokers
-kafkaBrokers="ec2-54-197-77-131.compute-1.amazonaws.com:9092,ec2-44-208-162-39.compute-1.amazonaws.com:9092,ec2-35-173-244-102.compute-1.amazonaws.com:9092"
+kafkaBrokers="ec2-44-201-90-72.compute-1.amazonaws.com:9092,ec2-54-163-208-13.compute-1.amazonaws.com:9092,ec2-44-203-179-175.compute-1.amazonaws.com:9092"
 
 
 # -- DO NOT CHANGE -----------------------
