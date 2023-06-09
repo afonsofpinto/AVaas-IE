@@ -22,7 +22,7 @@ aws_keyname = "YOUR .pem KEY FILE NAME"
 
 ## 2 - Launch the databases [RDS-Terraform]
 
-First, set the following parameters in the RDS .tf file: 
+(Optional) Set the Username and Password for the databases in the RDS .tf file: 
 		
 ```Terraform
 variable "db_username" {
@@ -39,7 +39,7 @@ variable "db_password" {
   default     = "YOUR DB PASSWORD"
 }
 ```
-Besides the username and password, you can also change the db name in the variables on that file (not required)
+You can also change the db name in the variables on that file (not required)
 
 Then run the following commands:
 ```bash
@@ -169,3 +169,29 @@ Where **topic** can be one of the following:
 - **vehicle-txns** (where User microservice produces to)
 - **apilot-txns** (where User microservice produces to)
 			
+## 7 - Camunda / BPMN
+**WARNING** - You must do this step only after launching the microservices since it has
+dependencies on some commands executed byt the microservices script.  
+Launch the camunda instance for running the BPMN processes:
+```bash
+cd Camunda-Terraform
+terraform init
+terraform destroy -var-file="../aws-session.tf"
+terraform apply -var-file="../aws-session.tf"
+```
+To run the bpmn processes, you will need to set the hostname of every existing connectors of
+every automated task.
+### BPMN Use cases configuration
+#### B1 - User subscribing/unsubscribing
+You need to **pass an initial variable** to the process: 
+- Name: userHostname, 
+- Type: string
+- Value: <user-microservice-hostname>  
+where this last one is available in the output of running **4.**
+
+#### B2 - Car manufacturer entering/updating/removing cars
+You need to **pass an initial variable** to the process:
+- Name: carHostname,
+- Type: string
+- Value: <car-microservice-hostname>  
+  where this last one is available in the output of running **4.**
