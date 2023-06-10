@@ -33,6 +33,7 @@
         <bpmn:flowNodeRef>Activity_13mbeb3</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_18ml52v</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_09esi52</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0zzad68</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:userTask id="subscribe-form" name="Input Subscribe information" camunda:assignee="demo">
@@ -80,8 +81,13 @@
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Host">user.com</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
             <camunda:inputParameter name="method">POST</camunda:inputParameter>
-            <camunda:inputParameter name="url">http://${userHostname}:8080/State/subscribe/${username}/${balance}</camunda:inputParameter>
+            <camunda:inputParameter name="url">http://${kong}:8000/State/subscribe/${username}/${balance}</camunda:inputParameter>
             <camunda:inputParameter name="payload" />
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
@@ -94,8 +100,13 @@
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Host">user.com</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
             <camunda:inputParameter name="payload" />
-            <camunda:inputParameter name="url">http://${userHostname}:8080/State/unsubscribe/${userId}</camunda:inputParameter>
+            <camunda:inputParameter name="url">http://${kong}:8000/State/unsubscribe/${userId}</camunda:inputParameter>
             <camunda:inputParameter name="method">DELETE</camunda:inputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
@@ -175,6 +186,7 @@
           <camunda:formField id="balance" label="balance" type="long" />
           <camunda:formField id="username" label="username" type="string" />
           <camunda:formField id="validated" label="Validate?" type="boolean" defaultValue="false" />
+          <camunda:formField id="users" label="Users" type="string" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1yur4g6</bpmn:incoming>
@@ -185,13 +197,14 @@
         <camunda:formData>
           <camunda:formField id="userId" label="user id" type="string" />
           <camunda:formField id="validated" label="Validate?" type="boolean" defaultValue="false" />
+          <camunda:formField id="users" label="Users" type="string" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0pgxg45</bpmn:incoming>
       <bpmn:outgoing>Flow_1pphoa1</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:exclusiveGateway id="Gateway_09esi52" name="operation">
-      <bpmn:incoming>Flow_1igca0b</bpmn:incoming>
+      <bpmn:incoming>Flow_0oviayd</bpmn:incoming>
       <bpmn:outgoing>Flow_1yur4g6</bpmn:outgoing>
       <bpmn:outgoing>Flow_0pgxg45</bpmn:outgoing>
     </bpmn:exclusiveGateway>
@@ -209,7 +222,7 @@
     <bpmn:sequenceFlow id="Flow_043w8q7" name="unsubscribe" sourceRef="Gateway_1w41e4g" targetRef="unsubscribe-form">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!subscribe}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1igca0b" sourceRef="Activity_11acjwl" targetRef="Gateway_09esi52" />
+    <bpmn:sequenceFlow id="Flow_1igca0b" sourceRef="Activity_11acjwl" targetRef="Activity_0zzad68" />
     <bpmn:sequenceFlow id="Flow_0h4utuc" name="subscribe" sourceRef="Gateway_055y7hu" targetRef="Activity_052xcps">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${subscribe}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -243,7 +256,30 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_07asja3" sourceRef="Gateway_1m4cjbl" targetRef="Gateway_1w009d6" />
     <bpmn:sequenceFlow id="Flow_1pphoa1" sourceRef="Activity_18ml52v" targetRef="Gateway_1m4cjbl" />
+    <bpmn:sequenceFlow id="Flow_0oviayd" sourceRef="Activity_0zzad68" targetRef="Gateway_09esi52" />
+    <bpmn:serviceTask id="Activity_0zzad68" name="Get all users">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Host">user.com</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="url">http://${kong}:8000/State/getAllClients</camunda:inputParameter>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:outputParameter name="users">
+              <camunda:script scriptFormat="Javascript">S(connector.getVariable("response"));</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1igca0b</bpmn:incoming>
+      <bpmn:outgoing>Flow_0oviayd</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
+  <bpmn:message id="Message_0k33up0" name="Message_0cci74g" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="sub_unsub">
       <bpmndi:BPMNShape id="Participant_1rkpe8k_di" bpmnElement="Participant_1rkpe8k" isHorizontal="true">
@@ -363,10 +399,9 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1igca0b_di" bpmnElement="Flow_1igca0b">
         <di:waypoint x="1060" y="380" />
-        <di:waypoint x="1060" y="490" />
-        <di:waypoint x="810" y="490" />
-        <di:waypoint x="810" y="630" />
-        <di:waypoint x="845" y="630" />
+        <di:waypoint x="1060" y="480" />
+        <di:waypoint x="810" y="480" />
+        <di:waypoint x="810" y="500" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_043w8q7_di" bpmnElement="Flow_043w8q7">
         <di:waypoint x="525" y="360" />
@@ -415,6 +450,11 @@
         <di:waypoint x="860" y="280" />
         <di:waypoint x="950" y="280" />
         <di:waypoint x="950" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0oviayd_di" bpmnElement="Flow_0oviayd">
+        <di:waypoint x="810" y="580" />
+        <di:waypoint x="810" y="630" />
+        <di:waypoint x="845" y="630" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Activity_05e2gax_di" bpmnElement="subscribe-form">
         <dc:Bounds x="760" y="240" width="100" height="80" />
@@ -502,6 +542,9 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="907" y="633" width="46" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_18i0q42_di" bpmnElement="Activity_0zzad68">
+        <dc:Bounds x="760" y="500" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
