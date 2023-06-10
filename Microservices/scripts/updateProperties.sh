@@ -10,10 +10,10 @@ sed -i "/^quarkus.datasource.username=/ s/.*/quarkus.datasource.username=$dbUser
 sed -i "/^quarkus.datasource.password=/ s/.*/quarkus.datasource.password=$dbPassword/" $path
 # escape "/" in database hostname
 escapedDbHostname=$(echo "$dbHostname" | sed 's/\//\\\//g') # escape slashes
-sed -i "/^quarkus.datasource.reactive.url=/ s/.*/quarkus.datasource.reactive.url=$escapedDbHostname:3306/" $path
+sed -i "/^quarkus\.datasource\.reactive.url=/ s/.*/quarkus.datasource.reactive.url=$escapedDbHostname:3306/" $path
 
 # Update docker properties
-sed -i "/^quarkus.container-image.group=/ s/.*/quarkus.container-image.group=$dockerUsername/" $path
+sed -i "/^quarkus\.container-image\.group=/ s/.*/quarkus.container-image.group=$dockerUsername/" $path
 
 # Update kafka brokers
-sed -i "/^kafka.bootstrap.servers=/ s/.*/kafka.bootstrap.servers=$kafkaBrokers/" $path
+sed -i "/^kafka\.bootstrap\.servers=/ s/.*/kafka.bootstrap.servers=$kafkaBrokers/" $path

@@ -113,32 +113,17 @@ variable "security_group_name" {
   default     = "terraform-rds-instance"
 }
 
+resource "local_file" "db_car_hostname" {
+  filename = "${path.module}/car_addr.tmp"
+  content  = aws_db_instance.car.address
+}
 
-# DONT CHANGE -- Used in the scripts
+resource "local_file" "db_user_hostname" {
+  filename = "${path.module}/user_addr.tmp"
+  content  = aws_db_instance.user.address
+}
 
-output "dbUsername" {
-  value       = nonsensitive(var.db_username)
-  sensitive = false
-}
-output "dbPassword" {
-  value       = nonsensitive(var.db_password)
-  sensitive = false
-}
-output "dbHostAPILOT" {
-  value       = aws_db_instance.apilot.address
-}
-output "dbHostCar" {
-  value       = aws_db_instance.car.address
-}
-output "dbHostUser" {
-  value       = aws_db_instance.user.address
-}
-output "dbAPILOTName" {
-  value       = var.apilot_db_name
-}
-output "dbCarName" {
-  value       = var.car_db_name
-}
-output "dbUserName" {
-  value       = var.user_db_name
+resource "local_file" "db_apilot_hostname" {
+  filename = "${path.module}/apilot_addr.tmp"
+  content  = aws_db_instance.apilot.address
 }

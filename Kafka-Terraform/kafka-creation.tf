@@ -77,6 +77,7 @@ resource "aws_instance" "exampleCluster" {
 # list of hostnames for zookeeper & kafka config, comma separated
 locals {
   instance_hostnames = [for i in range(var.nBroker) : element(aws_instance.exampleCluster, i).public_dns]
+  kafka_hostnames = join(" ", [for i in range(var.nBroker) : element(aws_instance.exampleCluster, i).public_dns])
   kafka_config = join(",", [for i in range(var.nBroker) : "${local.instance_hostnames[i]}:${var.zookeeper_kafka_port}"])
   kafka_brokers = join(",", [for i in range(var.nBroker) : "${local.instance_hostnames[i]}:${var.kafka_port}"])
   zookeeper_config = join(",", [for i in range(var.nBroker) : "server.${i+1}=${local.instance_hostnames[i]}:${var.zookeeper_zookeeper_port}:${var.zookeeper_leader_port}"])
@@ -113,15 +114,6 @@ resource "null_resource" "updateConfigs" {
       data.template_file.config_script.rendered,
     ]
   }
-}
-
-
-output "instance_hostnames" {
-  value = local.instance_hostnames
-}
-
-output "kafka_brokers" {
-  value = local.kafka_brokers
 }
 
 resource "aws_security_group" "instance" {
@@ -166,3 +158,12 @@ resource "aws_security_group" "instance" {
   }
 }
 
+resource "local_file" "kafka_brokers" {
+  filename = "${path.module}/kafka_brokers.tmp"
+  content  = local.kafka_brokers
+}
+
+resource "local_file" "kafka_hostnames" {
+  filename = "${path.module}/kafka_hostnames.tmp"
+  content  = local.kafka_hostnames
+}
