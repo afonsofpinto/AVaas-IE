@@ -1,0 +1,11 @@
+{
+  "type": "default",
+  "id": "Form_1vyqrei",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.11.0"
+  },
+  "components": [],
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.19.0"
+}
