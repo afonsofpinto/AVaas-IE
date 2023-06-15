@@ -3,24 +3,23 @@
 dockerUsername="ietest"
 dockerPassword="123456789"
 
-# paste here the output from RDS database terraform
+# (optional)
 dbAPILOTName="apilot"
 dbCarName="car"
-dbHostAPILOT="apilot20230615004732657500000002.cufhlpdbzdn2.us-east-1.rds.amazonaws.com"
-dbHostCar="car20230615004732658600000003.cufhlpdbzdn2.us-east-1.rds.amazonaws.com"
-dbHostUser="user20230615004732657500000001.cufhlpdbzdn2.us-east-1.rds.amazonaws.com"
 dbPassword="password"
 dbUserName="user"
 dbUsername="root"
 
 
-
-
-# kafka brokers
-kafkaBrokers="ec2-54-86-86-136.compute-1.amazonaws.com:9092,ec2-3-87-203-171.compute-1.amazonaws.com:9092,ec2-184-72-107-99.compute-1.amazonaws.com:9092"
-
-
 # -- DO NOT CHANGE -----------------------
+# kafka brokers
+kafkaBrokers=$(cat ../Kafka-Terraform/kafka_brokers.tmp)
+
+
+dbHostAPILOT=$(cat ../RDS-Terraform/apilot_addr.tmp)
+dbHostCar=$(cat ../RDS-Terraform/car_addr.tmp)
+dbHostUser=$(cat ../RDS-Terraform/user_addr.tmp)
+
 propertiesPath="src/main/resources/application.properties"
 
 full_db_hostname() {
@@ -45,5 +44,4 @@ bash ./scripts/microservice_builder.sh "$dockerUsername" "$dockerPassword" "user
 
 # deploy microservices
 terraform init
-terraform destroy -var-file="../aws-session.tf"
-terraform apply -var-file="../aws-session.tf"
+terraform apply -var-file="../aws-session.tf" -auto-approve

@@ -82,7 +82,7 @@ public class CarResource {
     @PUT
     @Path("/update_cost")
     public Uni<Response> updateCost(Car car) {
-        return Car.updateStock(client, car.getName(), car.getManufactor(),car.getCost())
+        return Car.updateCost(client, car.getName(), car.getManufactor(),car.getCost())
         .onItem().transform(updated -> updated ? Status.NO_CONTENT : Status.NOT_FOUND)
         .onItem().transform(status -> Response.status(status).build());
     }

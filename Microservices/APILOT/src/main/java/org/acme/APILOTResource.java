@@ -3,11 +3,8 @@ package org.acme;
 import java.net.URI;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.ResponseBuilder;
 import jakarta.ws.rs.core.Response.Status;
@@ -61,6 +58,7 @@ public class APILOTResource {
     @POST
     @Path("/developers")
     public Uni<Response> createDeveloper(APILOTDeveloper developer) {
+        System.out.println("Received developer with name: " + developer.name);
         return developer.save(client)
                 .onItem().transform(name -> URI.create("/manufacturer/" + name))
                 .onItem().transform(uri -> Response.created(uri).build());
@@ -117,9 +115,9 @@ public class APILOTResource {
 
 
     @DELETE
-    @Path("/apilot")
-    public Uni<Response> removeAPILOT(APILOT apilot) {
-        return APILOT.delete(client, apilot.getModel(), apilot.getDeveloper())
+    @Path("/apilot/{model}/{developer}")
+    public Uni<Response> removeAPILOT(@PathParam String model, @PathParam String developer) {
+        return APILOT.delete(client, model, developer)
                 .onItem().transform(deleted -> deleted ? Status.NO_CONTENT : Status.NOT_FOUND)
                 .onItem().transform(status -> Response.status(status).build());
     }

@@ -93,20 +93,19 @@ variable "security_group_name" {
   default = "terraform-Quarkus-instance"
 }
 
-
-output "apilot_microservice" {
-  value = aws_instance.apilot.public_dns
-  description = "Address of the Quarkus EC2 machine"
+resource "local_file" "user" {
+  filename = "${path.module}/user_addr.tmp"
+  content  = aws_instance.user.public_dns
 }
 
-output "car_microservice" {
-  value = aws_instance.car.public_dns
-  description = "Address of the Quarkus EC2 machine"
+resource "local_file" "car" {
+  filename = "${path.module}/car_addr.tmp"
+  content  = aws_instance.car.public_dns
 }
 
-output "user_microservice" {
-  value = aws_instance.user.public_dns
-  description = "Address of the Quarkus EC2 machine"
+resource "local_file" "apilot" {
+  filename = "${path.module}/apilot_addr.tmp"
+  content  = aws_instance.apilot.public_dns
 }
 
 

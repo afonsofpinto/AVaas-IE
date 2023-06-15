@@ -2,9 +2,36 @@
 
 The autonomous vehicle as a service (AVaaS) is a cloudbased system that aims at the integration between car manufacturers, autopilot developers, vehicle users, and other external service providers to provide value added services of intelligence quotient (IQ), ethical quotient (EQ), and adversity quotient (AQ)1. IQ, EQ and AQ are symbolical ones. All of this services will be developed here.
 
-# Deployment steps
+# 1 - Auto deployment steps
+1.1 - Customize the following fields from the ```aws_session.tf``` file:
+```Terraform
+aws_access_key = "YOUR KEY"
+aws_secret_key = "YOUR KEY"
+aws_token = "YOUR TOKEN"
+aws_keyname = "YOUR .pem KEY FILE NAME"
+```
+Also set the key file name in the ```deploy_automated.sh``` script
 
-## 1 - Set aws access information and keys
+1.2 - Place the .pem key file in the root directory and set permissions:
+
+**Windows**: ```icacls <keyfile>.pem /inheritance:r /grant:r "<username>:(RX)"```, where username is the output of running the command ```whoami```
+
+**Linux/Unix OS**: ```chmod u=rwx,g=,o= <keyfile>.pem```
+
+Set you docker account in the ```Microservices/deploy_microservices.sh``` script:
+```bash
+# docker
+dockerUsername="ietest"
+dockerPassword="123456789"
+```
+
+Run the auto deployment script
+```
+bash deploy_automated.sh
+```
+
+# 2 - Manual deployment (debug)
+## 2.1 - Set aws access information and keys
 1.1 - Customize the following fields from the ```aws_session.tf``` file:
 ```Terraform
 aws_access_key = "YOUR KEY"
@@ -20,7 +47,7 @@ aws_keyname = "YOUR .pem KEY FILE NAME"
 **Linux/Unix OS**: ```chmod u=rwx,g=,o= <keyfile>.pem```
 
 
-## 2 - Launch the databases [RDS-Terraform]
+## 2.2 - Launch the databases [RDS-Terraform]
 
 (Optional) Set the Username and Password for the databases in the RDS .tf file: 
 		
@@ -44,21 +71,17 @@ You can also change the db name in the variables on that file (not required)
 Then run the following commands:
 ```bash
 cd RDS-Terraform
-terraform init
-terraform destroy -var-file="../aws-session.tf"
-terraform apply -var-file="../aws-session.tf"
+bash deploy_rds.sh
 ```
 Save the output somewhere (it will be used in point **4.**)
 
 
-## 3 - Launch Kafka cluster
+## 2.3 - Launch Kafka cluster
 #### !IMPORTANT! - Use LF as the line terminator on all scripts. Else some scripts will not execute in the AWS instances!
 From the root directory execute the following commands:
 ```bash
 cd Kafka-Terraform
-terraform init
-terraform destroy -var-file="../aws-session.tf"
-terraform apply -var-file="../aws-session.tf"
+deploy_kafka.sh
 ```
 
 Go to your AWS dashboard and **reboot all created instances**.
@@ -69,7 +92,7 @@ The broker's hostnames are printed on the terminal, so you can use those values 
 the properties on the next section
 
 
-## 4 - Launch Microservices
+## 2.4 - Launch Microservices + Camunda + Kong
 
 Edit the ```Microservices/deploy_microservices.sh``` file. Namely, copy the 
 output of 2. (the databases info) and paste them here, and edit other fields:  
@@ -80,25 +103,14 @@ to delete the spaces to be exactly as it is below!
 dockerUsername="dockerusername"
 dockerPassword="dockerpassword"
 
-# paste here the output from RDS database terraform
+# CHANGE ONLY if you changed the default database names/username/password
 dbAPILOTName="apilot"
 dbCarName="car"
-dbHostAPILOT="apilot20230520112708447400000003.chphl7tm5mbk.us-east-1.rds.amazonaws.com"
-dbHostCar="car20230520112708446300000001.chphl7tm5mbk.us-east-1.rds.amazonaws.com"
-dbHostUser="user20230520112708446800000002.chphl7tm5mbk.us-east-1.rds.amazonaws.com"
 dbPassword="password"
 dbUserName="user"
 dbUsername="root"
-
-# kafka
-kafkaBrokers="ec2-18-233-8-92.compute-1.amazonaws.com:9092,ec2-18-206-245-148.compute-1.amazonaws.com:9092,ec2-54-173-82-93.compute-1.amazonaws.com:9092"
 ```
 For the kafka brokers you can copy the output from **3.**
-
-Also paste the kafka servers in the application.properties of User microservice:
-```properties
-kafka.bootstrap.servers=ec2-54-197-77-131.compute-1.amazonaws.com:9092,ec2-44-208-162-39.compute-1.amazonaws.com:9092,ec2-35-173-244-102.compute-1.amazonaws.com:9092
-```
 
 **IMPORTANT** - depending on your system's architecture, you may need to change the instance type
 as well as the AMI in ```Microservices/create-microservices.tf```:
@@ -130,7 +142,7 @@ The microservices now should be connected to the respective databases
 and kafka.
 
 
-## 5 - Launch AVaaSSimulator
+## 2.5 - Launch AVaaSSimulator
 Copy the kafka_brokers variable from the output of **3.** and put them in the pom.xml:
 ```Xml
       <plugin>
@@ -154,7 +166,22 @@ Then run the application with:
 mvn exec:java
 ```
 
-## 6 - Consume from kafka
+## 2.6 - Deploy Camunda engine
+Run:
+```
+cd Camunda-Terraform
+bash deploy_camunda.sh
+```
+
+## 2.7 - Deploy Kong
+Run:
+```
+cd Kong-Terraform
+bash deploy_kong.sh
+```
+
+
+## 2.8 - Consume from kafka
 To consume the events generated from either the AVaaSSimulator or the user microservice,
 login into one of the microservices:
 ```bash
@@ -168,30 +195,20 @@ Where **topic** can be one of the following:
 - **av-events** (where AVaaSSimulator produces to)
 - **vehicle-txns** (where User microservice produces to)
 - **apilot-txns** (where User microservice produces to)
-			
-## 7 - Camunda / BPMN
-**WARNING** - You must do this step only after launching the microservices since it has
-dependencies on some commands executed byt the microservices script.  
-Launch the camunda instance for running the BPMN processes:
-```bash
-cd Camunda-Terraform
-terraform init
-terraform destroy -var-file="../aws-session.tf"
-terraform apply -var-file="../aws-session.tf"
-```
+
+
+# 3 - BPMN
 To run the bpmn processes, you will need to set the hostname of every existing connectors of
 every automated task.
 ### BPMN Use cases configuration
 #### B1 - User subscribing/unsubscribing
 You need to **pass an initial variable** to the process: 
-- Name: userHostname, 
+- Name: kong, 
 - Type: string
-- Value: <user-microservice-hostname>  
-where this last one is available in the output of running **4.**
+- Value: <kong-hostname>
 
 #### B2 - Car manufacturer entering/updating/removing cars
 You need to **pass an initial variable** to the process:
-- Name: carHostname,
+- Name: kong,
 - Type: string
-- Value: <car-microservice-hostname>  
-  where this last one is available in the output of running **4.**
+- Value: <kong-hostname>
