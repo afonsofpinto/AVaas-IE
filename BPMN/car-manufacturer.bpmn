@@ -42,16 +42,16 @@
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Host">car.com</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+                <camunda:entry key="accept">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
             <camunda:inputParameter name="method">POST</camunda:inputParameter>
-            <camunda:inputParameter name="url">http://${carHostname}:8080/Cars/createCar</camunda:inputParameter>
+            <camunda:inputParameter name="url">http://${kong}:8000/Cars/createCar</camunda:inputParameter>
             <camunda:inputParameter name="payload">{ "name": "${name}",  "manufactor": "${manufactor}", "cost": ${cost},  "stock": ${stock} }</camunda:inputParameter>
-            <camunda:outputParameter name="url">http://${carHostname}:8080/Cars/createCar</camunda:outputParameter>
-            <camunda:outputParameter name="var">{
-  "name": "${name}",
-  "manufactor": "${manufactor}",
-  "cost": ${cost},
-  "stock": ${stock}
-}</camunda:outputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
         </camunda:connector>
@@ -63,7 +63,12 @@
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
-            <camunda:inputParameter name="url">http://${carHostname}:8080/Cars/getAllCars</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Host">car.com</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="url">http://${kong}:8000/Cars/getAllCars</camunda:inputParameter>
             <camunda:inputParameter name="method">GET</camunda:inputParameter>
             <camunda:outputParameter name="available_cars">
               <camunda:script scriptFormat="JavaScript">S(connector.getVariable("response"));</camunda:script>
@@ -79,8 +84,13 @@
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Host">car.com</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
             <camunda:inputParameter name="method">GET</camunda:inputParameter>
-            <camunda:inputParameter name="url">http://${carHostname}:8080/Cars/getAllCars</camunda:inputParameter>
+            <camunda:inputParameter name="url">http://${kong}:8000/Cars/getAllCars</camunda:inputParameter>
             <camunda:outputParameter name="available_cars">
               <camunda:script scriptFormat="JavaScript">S(connector.getVariable("response"));</camunda:script>
             </camunda:outputParameter>
@@ -95,21 +105,20 @@
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+                <camunda:entry key="Host">car.com</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
             <camunda:inputParameter name="method">PUT</camunda:inputParameter>
-            <camunda:inputParameter name="url">http://${carHostname}:8080/Cars/update_cost</camunda:inputParameter>
+            <camunda:inputParameter name="url">http://${kong}:8000/Cars/update_cost</camunda:inputParameter>
             <camunda:inputParameter name="payload">{
   "name":"${name}",
   "manufactor":"${manufactor}",
   "cost":${cost},
   "stock":${stock}
 }</camunda:inputParameter>
-            <camunda:outputParameter name="payload">{
-  "name": "${name}",
-  "manufactor": "${manufactor}",
-  "cost": ${cost},
-  "stock": ${stock}
-}</camunda:outputParameter>
-            <camunda:outputParameter name="url">http://${carHostname}:8080/Cars/update_cost</camunda:outputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
         </camunda:connector>
@@ -121,8 +130,13 @@
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Host">car.com</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
             <camunda:inputParameter name="method">DELETE</camunda:inputParameter>
-            <camunda:inputParameter name="url">http://${carHostname}:8080/Cars/delete/${name}/${manufactor}</camunda:inputParameter>
+            <camunda:inputParameter name="url">http://${kong}:8000/Cars/delete/${name}/${manufactor}</camunda:inputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
         </camunda:connector>
@@ -154,8 +168,14 @@
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Host">car.com</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
             <camunda:inputParameter name="method">PUT</camunda:inputParameter>
-            <camunda:inputParameter name="url">http://${carHostname}:8080/Cars/update_stock</camunda:inputParameter>
+            <camunda:inputParameter name="url">http://${kong}:8000/Cars/update_stock</camunda:inputParameter>
             <camunda:inputParameter name="payload">{
   "name": "${name}",
   "manufactor": "${manufactor}",
@@ -210,28 +230,47 @@
       <bpmndi:BPMNShape id="Participant_1alx8mg_di" bpmnElement="Participant_1alx8mg" isHorizontal="true">
         <dc:Bounds x="170" y="80" width="1240" height="350" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_08n819o_di" bpmnElement="Flow_08n819o">
-        <di:waypoint x="515" y="260" />
-        <di:waypoint x="590" y="260" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="519" y="238" width="34" height="14" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNEdge id="Flow_19kb3ch_di" bpmnElement="Flow_19kb3ch">
+        <di:waypoint x="1275" y="260" />
+        <di:waypoint x="1342" y="260" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1vrd4yk_di" bpmnElement="Flow_1vrd4yk">
-        <di:waypoint x="490" y="285" />
-        <di:waypoint x="490" y="370" />
-        <di:waypoint x="590" y="370" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="502" y="353" width="37" height="14" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNEdge id="Flow_0q77mof_di" bpmnElement="Flow_0q77mof">
+        <di:waypoint x="1190" y="260" />
+        <di:waypoint x="1225" y="260" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0huyg2k_di" bpmnElement="Flow_0huyg2k">
-        <di:waypoint x="410" y="260" />
-        <di:waypoint x="465" y="260" />
+      <bpmndi:BPMNEdge id="Flow_1yi4ntt_di" bpmnElement="Flow_1yi4ntt">
+        <di:waypoint x="1030" y="370" />
+        <di:waypoint x="1250" y="370" />
+        <di:waypoint x="1250" y="285" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ki5wr1_di" bpmnElement="Flow_1ki5wr1">
-        <di:waypoint x="258" y="260" />
-        <di:waypoint x="310" y="260" />
+      <bpmndi:BPMNEdge id="Flow_190031y_di" bpmnElement="Flow_190031y">
+        <di:waypoint x="860" y="370" />
+        <di:waypoint x="930" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0506s53_di" bpmnElement="Flow_0506s53">
+        <di:waypoint x="1030" y="260" />
+        <di:waypoint x="1090" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11bmlxv_di" bpmnElement="Flow_11bmlxv">
+        <di:waypoint x="860" y="260" />
+        <di:waypoint x="930" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02zajkd_di" bpmnElement="Flow_02zajkd">
+        <di:waypoint x="690" y="370" />
+        <di:waypoint x="760" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0o5stnp_di" bpmnElement="Flow_0o5stnp">
+        <di:waypoint x="860" y="140" />
+        <di:waypoint x="1250" y="140" />
+        <di:waypoint x="1250" y="235" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fxxidx_di" bpmnElement="Flow_0fxxidx">
+        <di:waypoint x="690" y="140" />
+        <di:waypoint x="760" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17wc22f_di" bpmnElement="Flow_17wc22f">
+        <di:waypoint x="690" y="260" />
+        <di:waypoint x="760" y="260" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0rtl6i3_di" bpmnElement="Flow_0rtl6i3">
         <di:waypoint x="490" y="235" />
@@ -241,47 +280,28 @@
           <dc:Bounds x="502" y="154" width="27" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_17wc22f_di" bpmnElement="Flow_17wc22f">
-        <di:waypoint x="690" y="260" />
-        <di:waypoint x="760" y="260" />
+      <bpmndi:BPMNEdge id="Flow_1ki5wr1_di" bpmnElement="Flow_1ki5wr1">
+        <di:waypoint x="258" y="260" />
+        <di:waypoint x="310" y="260" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0fxxidx_di" bpmnElement="Flow_0fxxidx">
-        <di:waypoint x="690" y="140" />
-        <di:waypoint x="760" y="140" />
+      <bpmndi:BPMNEdge id="Flow_0huyg2k_di" bpmnElement="Flow_0huyg2k">
+        <di:waypoint x="410" y="260" />
+        <di:waypoint x="465" y="260" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0o5stnp_di" bpmnElement="Flow_0o5stnp">
-        <di:waypoint x="860" y="140" />
-        <di:waypoint x="1250" y="140" />
-        <di:waypoint x="1250" y="235" />
+      <bpmndi:BPMNEdge id="Flow_1vrd4yk_di" bpmnElement="Flow_1vrd4yk">
+        <di:waypoint x="490" y="285" />
+        <di:waypoint x="490" y="370" />
+        <di:waypoint x="590" y="370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="502" y="353" width="37" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_02zajkd_di" bpmnElement="Flow_02zajkd">
-        <di:waypoint x="690" y="370" />
-        <di:waypoint x="760" y="370" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_11bmlxv_di" bpmnElement="Flow_11bmlxv">
-        <di:waypoint x="860" y="260" />
-        <di:waypoint x="930" y="260" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0506s53_di" bpmnElement="Flow_0506s53">
-        <di:waypoint x="1030" y="260" />
-        <di:waypoint x="1090" y="260" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_190031y_di" bpmnElement="Flow_190031y">
-        <di:waypoint x="860" y="370" />
-        <di:waypoint x="930" y="370" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1yi4ntt_di" bpmnElement="Flow_1yi4ntt">
-        <di:waypoint x="1030" y="370" />
-        <di:waypoint x="1250" y="370" />
-        <di:waypoint x="1250" y="285" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0q77mof_di" bpmnElement="Flow_0q77mof">
-        <di:waypoint x="1190" y="260" />
-        <di:waypoint x="1225" y="260" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_19kb3ch_di" bpmnElement="Flow_19kb3ch">
-        <di:waypoint x="1275" y="260" />
-        <di:waypoint x="1342" y="260" />
+      <bpmndi:BPMNEdge id="Flow_08n819o_di" bpmnElement="Flow_08n819o">
+        <di:waypoint x="515" y="260" />
+        <di:waypoint x="590" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="519" y="238" width="34" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="222" y="242" width="36" height="36" />

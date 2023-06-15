@@ -18,6 +18,13 @@ Also set the key file name in the ```deploy_automated.sh``` script
 
 **Linux/Unix OS**: ```chmod u=rwx,g=,o= <keyfile>.pem```
 
+Set you docker account in the ```Microservices/deploy_microservices.sh``` script:
+```bash
+# docker
+dockerUsername="ietest"
+dockerPassword="123456789"
+```
+
 Run the auto deployment script
 ```
 bash deploy_automated.sh
