@@ -29,6 +29,12 @@ Run the auto deployment script
 ```
 bash deploy_automated.sh
 ```
+If you see several messages like "curl: (7) Failed to connect to ec2-3-95-225-33.compute-1.amazonaws.com port 8001 after 2565 ms: Connection refused
+" at the end, then you will have to run :
+```
+cd Kong
+bash setServicesNRoutes.sh
+```
 
 # 2 - Manual deployment (debug)
 ## 2.1 - Set aws access information and keys

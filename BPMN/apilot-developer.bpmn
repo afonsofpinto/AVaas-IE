@@ -68,7 +68,7 @@
         <camunda:formData>
           <camunda:formField id="modelD" label="Model" type="string" />
           <camunda:formField id="developerD" label="Developer" type="string" />
-          <camunda:formField id="available_apilots" label="Cars" type="string" />
+          <camunda:formField id="available_apilots" label="Available APILOTs" type="string" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1co929z</bpmn:incoming>
