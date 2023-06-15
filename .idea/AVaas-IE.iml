@@ -4,6 +4,9 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/AVaaSSimulator/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Microservices/APILOT/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Microservices/Car/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Microservices/User/src" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

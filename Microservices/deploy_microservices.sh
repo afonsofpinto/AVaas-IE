@@ -15,6 +15,7 @@ dbUsername="root"
 # kafka brokers
 kafkaBrokers=$(cat ../Kafka-Terraform/kafka_brokers.tmp)
 
+
 dbHostAPILOT=$(cat ../RDS-Terraform/apilot_addr.tmp)
 dbHostCar=$(cat ../RDS-Terraform/car_addr.tmp)
 dbHostUser=$(cat ../RDS-Terraform/user_addr.tmp)

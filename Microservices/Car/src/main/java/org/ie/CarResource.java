@@ -31,10 +31,8 @@ public class CarResource {
     private void initdb() {
         client.query("DROP TABLE IF EXISTS AVaas").execute()
             .flatMap(r -> client.query("CREATE TABLE AVaas (name varchar(100) NOT NULL, manufactor varchar(100) NOT NULL, cost integer, stock integer, PRIMARY KEY (name, manufactor))").execute())
-            .flatMap(r -> client.query("INSERT INTO AVaas (name, manufactor, cost, stock) VALUES ('Bentley EXP 100 GT', 'Bentley',1900000, 10)").execute())
-            .flatMap(r -> client.query("INSERT INTO AVaas (name, manufactor, cost, stock) VALUES ('Ford Boss 302 Mustang', 'Ford', 50000, 4)").execute())
-            .flatMap(r -> client.query("INSERT INTO AVaas (name, manufactor, cost, stock) VALUES ('Lamborghini Reventon', 'Lamborghini', 1400000, 10)").execute())
-            .flatMap(r -> client.query("INSERT INTO AVaas (name, manufactor, cost, stock) VALUES ('Bugatti La Voiture Noire', 'Bugatti', 12000000, 2)").execute())
+            .flatMap(r -> client.query("INSERT INTO AVaas (name, manufactor, cost, stock) VALUES ('Focus', 'Ford',1900000, 10)").execute())
+
             .await().indefinitely();
 
     }
