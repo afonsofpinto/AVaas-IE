@@ -29,7 +29,7 @@ sudo bash -c "echo $idBroker > /var/lib/zookeeper/myid"
 
 # ---------- kafka ----------
 # get and setup files
-sudo wget https://downloads.apache.org/kafka/3.3.2/kafka_2.13-3.3.2.tgz
+sudo wget https://archive.apache.org/dist/kafka/3.3.2/kafka_2.13-3.3.2.tgz
 sudo tar -zxf kafka_2.13-3.3.2.tgz
 sudo mv kafka_2.13-3.3.2 /usr/local/kafka
 sudo mkdir /tmp/kafka-logs

@@ -40,7 +40,7 @@
         <bpmn:flowNodeRef>Activity_1i7spj5</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:userTask id="Activity_1vbwjtt" name="Decide the operation" camunda:assignee="demo">
+    <bpmn:userTask id="Activity_1vbwjtt" name="Decide the operation" camunda:assignee="user">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="id" label="ClientID" type="long" />
@@ -74,7 +74,7 @@
       <bpmn:outgoing>Flow_1rcrayy</bpmn:outgoing>
       <bpmn:outgoing>Flow_043w8q7</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Activity_1je70vk" name="Decide what to do next" camunda:assignee="demo">
+    <bpmn:userTask id="Activity_1je70vk" name="Decide what to do next" camunda:assignee="user">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="repeatInput" label="Repeat input?" type="boolean" defaultValue="false" />
@@ -92,7 +92,7 @@
       <bpmn:incoming>Flow_1d9n1g2</bpmn:incoming>
       <bpmn:outgoing>Flow_1igca0b</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:userTask id="inputInfoBuy" name="Input buy information" camunda:assignee="demo">
+    <bpmn:userTask id="inputInfoBuy" name="Input buy information" camunda:assignee="user">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="carPriceBuy" label="CarPrice" type="long" defaultValue="0" />
@@ -223,7 +223,7 @@
       <bpmn:outgoing>Flow_0e5u1hg</bpmn:outgoing>
       <bpmn:outgoing>Flow_1k3ei2i</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Activity_05x9ozb" name="Validate Buy information" camunda:assignee="demo">
+    <bpmn:userTask id="Activity_05x9ozb" name="Validate Buy information" camunda:assignee="employee">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="balance" label="Balance" type="long" defaultValue="0" />
@@ -297,7 +297,7 @@
     <bpmn:sequenceFlow id="Flow_086df15" sourceRef="Activity_0ua5u5o" targetRef="Activity_12778pz" />
     <bpmn:sequenceFlow id="Flow_0rpyq53" sourceRef="Gateway_1iqjru4" targetRef="Activity_1868zxi" />
     <bpmn:sequenceFlow id="Flow_0702b0j" sourceRef="Gateway_1iqjru4" targetRef="Activity_0wvcv4h" />
-    <bpmn:userTask id="inputInfoSell" name="Input sell Information" camunda:assignee="demo">
+    <bpmn:userTask id="inputInfoSell" name="Input sell Information" camunda:assignee="user">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="carPriceSell" label="CarPriceSell" type="long" />
@@ -349,7 +349,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${sell}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1d9a34n" sourceRef="Activity_1i7spj5" targetRef="Gateway_1w009d6" />
-    <bpmn:userTask id="Activity_17yfq36" name="Validate Sell information" camunda:assignee="demo">
+    <bpmn:userTask id="Activity_17yfq36" name="Validate Sell information" camunda:assignee="employee">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="carPriceSell" label="Car price" type="long" />

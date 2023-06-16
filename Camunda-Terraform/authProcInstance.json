@@ -1,0 +1,8 @@
+{
+  "type" : 1,
+  "permissions": ["CREATE"],
+  "userId": "user",
+  "groupId": null,
+  "resourceType": 8,
+  "resourceId": "*"
+}

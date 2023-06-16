@@ -29,7 +29,7 @@ provider "aws" {
 
 
 resource "aws_instance" "apilot" {
-  ami = "ami-06a0cd9728546d178" # Amazon Linux x86 CHANGE THIS
+  ami = "ami-090e0fc566929d98b" # Amazon Linux x86 CHANGE THIS
   instance_type = "t2.medium"
   vpc_security_group_ids = [aws_security_group.microservice.id]
   key_name = "vockey"
@@ -41,21 +41,47 @@ resource "aws_instance" "apilot" {
   }
 }
 
+resource "aws_instance" "apilot-mediator" {
+  ami = "ami-090e0fc566929d98b" # Amazon Linux x86 CHANGE THIS
+  instance_type = "t2.medium"
+  vpc_security_group_ids = [aws_security_group.microservice.id]
+  key_name = "vockey"
+  user_data = "${file("./scripts/apilot-mediator.sh")}"
+  user_data_replace_on_change = true
+  depends_on = [aws_instance.apilot]
+  tags = {
+    Name = "apilot-mediator-microservice"
+  }
+}
+
+resource "aws_instance" "apilot-simulator" {
+  ami = "ami-090e0fc566929d98b" # Amazon Linux x86 CHANGE THIS
+  instance_type = "t2.medium"
+  vpc_security_group_ids = [aws_security_group.microservice.id]
+  key_name = "vockey"
+  user_data = "${file("./scripts/apilot-simulator.sh")}"
+  user_data_replace_on_change = true
+  depends_on = [aws_instance.apilot-mediator]
+  tags = {
+    Name = "apilot-simulator-microservice"
+  }
+}
+
 resource "aws_instance" "car" {
-  ami = "ami-06a0cd9728546d178" # Amazon Linux x86 CHANGE THIS
+  ami = "ami-090e0fc566929d98b" # Amazon Linux x86 CHANGE THIS
   instance_type = "t2.medium"
   vpc_security_group_ids = [aws_security_group.microservice.id]
   key_name = "vockey"
   user_data = "${file("./scripts/car.sh")}"
   user_data_replace_on_change = true
-
+  depends_on = [aws_instance.apilot-simulator]
   tags = {
     Name = "Car-microservice"
   }
 }
 
 resource "aws_instance" "user" {
-  ami = "ami-06a0cd9728546d178" # Amazon Linux x86 CHANGE THIS
+  ami = "ami-090e0fc566929d98b" # Amazon Linux x86 CHANGE THIS
   instance_type = "t2.medium"
   vpc_security_group_ids = [aws_security_group.microservice.id]
   key_name = "vockey"
@@ -66,6 +92,8 @@ resource "aws_instance" "user" {
     Name = "User-microservice"
   }
 }
+
+
 
 # TODO deploy other microservices
 
@@ -106,6 +134,16 @@ resource "local_file" "car" {
 resource "local_file" "apilot" {
   filename = "${path.module}/apilot_addr.tmp"
   content  = aws_instance.apilot.public_dns
+}
+
+resource "local_file" "apilot-mediator" {
+  filename = "${path.module}/apilot-mediator_addr.tmp"
+  content  = aws_instance.apilot-mediator.public_dns
+}
+
+resource "local_file" "apilot-simulator" {
+  filename = "${path.module}/apilot-simulator_addr.tmp"
+  content  = aws_instance.apilot-simulator.public_dns
 }
 
 

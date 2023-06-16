@@ -1,0 +1,8 @@
+{
+  "type" : 1,
+  "permissions": ["CREATE_INSTANCE"],
+  "userId": "user",
+  "groupId": null,
+  "resourceType": 6,
+  "resourceId": "*"
+}

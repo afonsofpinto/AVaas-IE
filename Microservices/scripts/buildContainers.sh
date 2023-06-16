@@ -8,3 +8,9 @@ cd ..
 cd User
 ./mvnw clean package
 cd ..
+cd apilot-mediator
+./mvnw clean package
+cd ..
+cd apilot-simulator
+./mvnw clean package
+cd ..

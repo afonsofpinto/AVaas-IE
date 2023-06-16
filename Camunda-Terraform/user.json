@@ -1,0 +1,8 @@
+{"profile":
+{"id": "user",
+  "firstName":"John",
+  "lastName":"Doe",
+  "email":"a@a"},
+  "credentials":
+  {"password":"123"}
+}

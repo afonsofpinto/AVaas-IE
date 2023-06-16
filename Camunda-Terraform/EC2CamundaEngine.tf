@@ -57,7 +57,7 @@ variable "security_group_name" {
   default     = "terraform-Camunda-instance2"
 }
 
-output "address" {
-  value       = aws_instance.camundaEngine.public_dns
-  description = "Connect to the camunda at this endpoint"
+resource "local_file" "camunda" {
+  filename = "${path.module}/camunda_addr.tmp"
+  content  = aws_instance.camundaEngine.public_dns
 }

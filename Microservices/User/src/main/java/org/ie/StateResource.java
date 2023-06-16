@@ -1,8 +1,16 @@
 package org.ie;
 import io.smallrye.mutiny.Uni;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+
 import io.vertx.mutiny.sqlclient.Tuple;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -17,6 +25,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import org.apache.kafka.clients.admin.*;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.media.Schema.True;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
@@ -35,6 +44,8 @@ public class StateResource {
     @Inject
     @ConfigProperty(name = "myapp.schema.create", defaultValue = "true") 
     boolean schemaCreate;
+    @ConfigProperty(name = "kafka.bootstrap.servers")
+    String bootstrapServers;
     @Channel("vehicle-txns")
     Emitter<String> vehicleEmitter; // TODO change to carevent
     @Channel("apilot-txns")
@@ -187,7 +198,9 @@ public class StateResource {
     @PUT
     @Path("/selectPilot/{id}/{apilot_Id}/{car_name}/{manufactor}")
         public Uni<Response> selectapilot(@PathParam Long id,@PathParam Long apilot_Id,@PathParam String car_name,@PathParam String manufactor) {
-        apilotEmitter.send("SELECTED " + apilot_Id + " from " + manufactor);
+        createKafkaTopic(String.format("AV_%s_%s_%s_%s", id, apilot_Id, car_name, manufactor));
+        createKafkaTopic(String.format("APILOT_%s_%s_%s_%s", id, apilot_Id, car_name, manufactor));
+        System.out.println("bootstrap: " + bootstrapServers);
         return State.selectApilot(client, id,apilot_Id,car_name,manufactor,key)
         .onItem().transform(updated -> updated ? Status.NO_CONTENT : Status.NOT_FOUND)
         .onItem().transform(status -> Response.status(status).build());
@@ -196,10 +209,38 @@ public class StateResource {
     @PUT
     @Path("/unselectPilot/{id}/{apilot_Id}/{car_name}/{manufactor}")
     public Uni<Response> unselectapilot(@PathParam Long id,@PathParam Long apilot_Id,@PathParam String car_name,@PathParam String manufactor) {
-        apilotEmitter.send("UNSELECTED " + apilot_Id + " from " + manufactor);
+        deleteKafkaTopic(String.format("AV_%s_%s_%s_%s", id, apilot_Id, car_name, manufactor));
+        deleteKafkaTopic(String.format("APILOT_%s_%s_%s_%s", id, apilot_Id, car_name, manufactor));
         return State.unselectApilot(client, id,car_name,manufactor,key)
         .onItem().transform(updated -> updated ? Status.NO_CONTENT : Status.NOT_FOUND)
         .onItem().transform(status -> Response.status(status).build());
+    }
+
+    private void createKafkaTopic(String topicName) {
+        Properties properties = new Properties();
+        properties.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        try (AdminClient adminClient = AdminClient.create(properties)) {
+            int numPartitions = 3;
+            short replicationFactor = 3;
+            NewTopic newTopic = new NewTopic(topicName, numPartitions, replicationFactor);
+            adminClient.createTopics(Collections.singleton(newTopic)).all().get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteKafkaTopic(String topicName) {
+        Properties properties = new Properties();
+        properties.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        try (AdminClient adminClient = AdminClient.create(properties)) {
+            DeleteTopicsOptions options = new DeleteTopicsOptions();
+            options.timeoutMs(5000);
+            DeleteTopicsResult deleteTopicsResult = adminClient.deleteTopics(
+                    Collections.singleton(topicName), options);
+            deleteTopicsResult.values().get(topicName).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
 }

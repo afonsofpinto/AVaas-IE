@@ -189,13 +189,13 @@ bash deploy_kong.sh
 
 ## 2.8 - Consume from kafka
 To consume the events generated from either the AVaaSSimulator or the user microservice,
-login into one of the microservices:
+login into one of kafka brokers:
 ```bash
-ssh -i keyfile.pem ec2-user@microservice-hostname
+ssh -i keyfile.pem ec2-user@kafka-hostname
 ```
 And issue the following command:
 ```bash
-/usr/local/kafka/bin/kafka-console-consumer.sh --bootstrap-server <microservice-hostname>:9092 --topic <topic> --from-beginning
+/usr/local/kafka/bin/kafka-console-consumer.sh --bootstrap-server <kafka-hostname>:9092 --topic <topic> --from-beginning
 ```
 Where **topic** can be one of the following:
 - **av-events** (where AVaaSSimulator produces to)
@@ -207,14 +207,7 @@ Where **topic** can be one of the following:
 To run the bpmn processes, you will need to set the hostname of every existing connectors of
 every automated task.
 ### BPMN Use cases configuration
-#### B1 - User subscribing/unsubscribing
 You need to **pass an initial variable** to the process: 
 - Name: kong, 
-- Type: string
-- Value: <kong-hostname>
-
-#### B2 - Car manufacturer entering/updating/removing cars
-You need to **pass an initial variable** to the process:
-- Name: kong,
 - Type: string
 - Value: <kong-hostname>

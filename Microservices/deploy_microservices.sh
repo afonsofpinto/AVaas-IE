@@ -32,6 +32,9 @@ full_db_hostname() {
 bash ./scripts/updateProperties.sh "APILOT/$propertiesPath" "$dockerUsername" "$dbUsername" "$dbPassword" "$(full_db_hostname $dbHostAPILOT $dbAPILOTName)"
 bash ./scripts/updateProperties.sh "Car/$propertiesPath" "$dockerUsername" "$dbUsername" "$dbPassword" "$(full_db_hostname $dbHostCar $dbCarName)"
 bash ./scripts/updateProperties.sh "User/$propertiesPath" "$dockerUsername" "$dbUsername" "$dbPassword" "$(full_db_hostname $dbHostUser $dbUserName)" "$kafkaBrokers"
+bash ./scripts/updateProperties.sh "apilot-mediator/$propertiesPath" "$dockerUsername" "$dbUsername" "$dbPassword" "no-db" "$kafkaBrokers"
+bash ./scripts/updateProperties.sh "apilot-simulator/$propertiesPath" "$dockerUsername" "$dbUsername" "$dbPassword" "no-db" "$kafkaBrokers"
+
 
 docker login -u "$dockerUsername" -p "$dockerPassword"
 
@@ -41,6 +44,8 @@ bash ./scripts/buildContainers.sh
 bash ./scripts/microservice_builder.sh "$dockerUsername" "$dockerPassword" "apilot" "./scripts/apilot.sh"
 bash ./scripts/microservice_builder.sh "$dockerUsername" "$dockerPassword" "car" "./scripts/car.sh"
 bash ./scripts/microservice_builder.sh "$dockerUsername" "$dockerPassword" "user" "./scripts/user.sh"
+bash ./scripts/microservice_builder.sh "$dockerUsername" "$dockerPassword" "apilot-mediator" "./scripts/apilot-mediator.sh"
+bash ./scripts/microservice_builder.sh "$dockerUsername" "$dockerPassword" "apilot-simulator" "./scripts/apilot-simulator.sh"
 
 # deploy microservices
 terraform init
