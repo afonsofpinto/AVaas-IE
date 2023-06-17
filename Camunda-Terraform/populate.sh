@@ -51,7 +51,34 @@ sendPOST '{"profile":
 sendPOST '{
   "type" : 1,
   "permissions": ["ACCESS"],
-  "userId": "*",
+  "userId": "user",
+  "groupId": null,
+  "resourceType": 0,
+  "resourceId": "tasklist"
+}' "/authorization/create"
+
+sendPOST '{
+  "type" : 1,
+  "permissions": ["ACCESS"],
+  "userId": "employee",
+  "groupId": null,
+  "resourceType": 0,
+  "resourceId": "tasklist"
+}' "/authorization/create"
+
+sendPOST '{
+  "type" : 1,
+  "permissions": ["ACCESS"],
+  "userId": "manufacturer",
+  "groupId": null,
+  "resourceType": 0,
+  "resourceId": "tasklist"
+}' "/authorization/create"
+
+sendPOST '{
+  "type" : 1,
+  "permissions": ["ACCESS"],
+  "userId": "developer",
   "groupId": null,
   "resourceType": 0,
   "resourceId": "tasklist"

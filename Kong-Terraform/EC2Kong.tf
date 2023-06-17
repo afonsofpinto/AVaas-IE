@@ -21,7 +21,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "Kong" {
-  ami                     = "ami-06a0cd9728546d178"
+  ami                     = "ami-090e0fc566929d98b"
   instance_type           = "t2.small"
   vpc_security_group_ids  = [aws_security_group.instance.id]
   key_name                = "vockey"
